@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Cards
+class Deck
   attr_accessor :cards, :suits
 
   def initialize(_cards = [], _suits = [])

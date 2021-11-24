@@ -1,50 +1,40 @@
 # frozen_string_literal: true
 
-require_relative 'cards'
+require_relative 'deck'
 require_relative 'player'
 require_relative 'dealer'
 
 class BlackJack
   def game
-    @dealer.dealer_cards << @car.rand_cards << @car.rand_cards
-    @player_name.player_cards << @car.rand_cards << @car.rand_cards
-    send :scores, @player_name.player_cards, @player_name, "player_score"
-    send :scores, @dealer.dealer_cards, @dealer, "dealer_score"
+    @dealer.dealer_cards << @deck.rand_cards << @deck.rand_cards
+    @player_name.player_cards << @deck.rand_cards << @deck.rand_cards
+    scores(@player_name.player_cards, @player_name, "player_score")
+    scores(@dealer.dealer_cards, @dealer, "dealer_score")
     bank
     sleep(1)
-    player_actions
   end
 
   def start_game
-    @car = Cards.new
-    print "Enter your name: "
-    @player_name = gets.chomp
-    puts "Hello! #{@player_name}"
-    @player_name = Player.new
+    @deck = Deck.new
     @dealer = Dealer.new
-    game
-    puts "♦♦♦♦♦♦♦♦♦♦♦♦♦"
+    @player_name = gets.chomp
+    @player_name = Player.new
   end
 
   def player_actions
-    loop do
       info
-      puts "--------------Menu-------------"
-      puts "\nIf you want to SKIP - Enter 1"
-      puts "If you want ADD CARD - Enter 2"
-      puts "If you want OPEN CARDS - Enter 3"
-
       player_choice = gets.to_i
-
       case player_choice
-      when 1 then dealers_action
-      when 2 then add_card
-      when 3 then open_card
+        when 1 then dealers_action
+        when 2 then add_card
+        when 3 then open_card
+        when 0 then exit
       else
-        puts "Wrong user input. Please, enter 1, 2, or 3"
+        raise "Wrong user input. Please, enter 1, 2, or 3"
       end
-      open_card if true
-    end
+    rescue => e
+      puts e.message
+      retry
   end
 
   def dealers_action
@@ -52,8 +42,8 @@ class BlackJack
     if @dealer.dealer_score >= 17
       player_actions
     else
-      @dealer.dealer_cards << @car.rand_cards
-      send :scores, @dealer.dealer_cards, @dealer, "dealer_score"
+      @dealer.dealer_cards << @deck.rand_cards
+      scores(@dealer.dealer_cards, @dealer, "dealer_score")
     end
   end
 
@@ -67,10 +57,10 @@ class BlackJack
   end
 
   def open_card
-    if @player_name.player_score <= 21 && (@dealer.dealer_score < @player_name.player_score)
+    if @dealer.dealer_score >= 21 || (@dealer.dealer_score < @player_name.player_score && (@player_name.player_score <= 21))
       puts "PLAYER WIN!!! "
       @player_name.player_money = @player_name.player_money + @bank
-    elsif @player_name.player_score >= 21 || (@dealer.dealer_score > @player_name.player_score)
+    elsif @player_name.player_score >= 21 || (@dealer.dealer_score > @player_name.player_score && (@dealer.dealer_score <= 21))
       @dealer.dealer_money = @dealer.dealer_money + @bank
       puts "CAZINO WIN!!!"
     elsif @player_name.player_score == @dealer.dealer_score
@@ -79,7 +69,6 @@ class BlackJack
       @dealer.dealer_money = @dealer.dealer_money + 10
     end
     end_game
-    true
   end
 
   def end_game
@@ -88,18 +77,25 @@ class BlackJack
     puts "Do you want to continue playing? Enter: y/n"
     @dealer.dealer_cards = []
     @player_name.player_cards = []
-    retry_choise = gets.chomp.to_s
-    case retry_choise
-    when "y" then game
-    when "n" then exit
+    begin
+      retry_choise = gets.chomp.to_s
+      case retry_choise
+        when "y" then game
+        when "n" then exit
+      else
+        raise "Enter y/n"
+     end
+    rescue => e
+      puts e.message
+      retry
     end
   end
 
   def add_card
     sleep(1)
-    if @player_name.player_cards.count <= 2 || @player_name.player_score >= 21
-      @player_name.player_cards << @car.rand_cards
-      send :scores, @player_name.player_cards, @player_name, "player_score"
+    if @player_name.player_cards.count < 3 || @player_name.player_score <= 21
+      @player_name.player_cards << @deck.rand_cards
+      scores(@player_name.player_cards, @player_name, "player_score")
     else
       open_card
     end
@@ -134,9 +130,5 @@ class BlackJack
     @bank += 10
     puts "Bank: #{@bank}"
   end
-
   # BlackJack
 end
-
-game = BlackJack.new
-game.start_game

@@ -9,3 +9,7 @@ class Dealer
     @dealer_cards = []
   end
 end
+
+class Hand
+  
+end
