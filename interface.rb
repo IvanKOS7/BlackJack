@@ -2,6 +2,7 @@ require_relative 'deck'
 require_relative 'player'
 require_relative 'dealer'
 require_relative 'blackjack'
+require_relative 'hand'
 
 jack = BlackJack.new
 puts "Enter your name: "

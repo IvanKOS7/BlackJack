@@ -3,22 +3,27 @@
 require_relative 'deck'
 require_relative 'player'
 require_relative 'dealer'
+require_relative 'hand'
 
 class BlackJack
-  def game
-    @dealer.dealer_cards << @deck.rand_cards << @deck.rand_cards
-    @player_name.player_cards << @deck.rand_cards << @deck.rand_cards
-    scores(@player_name.player_cards, @player_name, "player_score")
-    scores(@dealer.dealer_cards, @dealer, "dealer_score")
-    bank
-    sleep(1)
-  end
 
   def start_game
     @deck = Deck.new
+    @deck.deck_card
+    @player_hand = Hand.new
+    @dealer_hand = Hand.new
     @dealer = Dealer.new
     @player_name = gets.chomp
     @player_name = Player.new
+  end
+
+  def game
+    @dealer_hand.hand << @deck.rand_cards << @deck.rand_cards
+    @player_hand.hand << @deck.rand_cards << @deck.rand_cards
+    scores(@player_hand.hand, @player_name, "player_score")
+    scores(@dealer_hand.hand, @dealer, "dealer_score")
+    bank
+    sleep(1)
   end
 
   def player_actions
@@ -42,16 +47,16 @@ class BlackJack
     if @dealer.dealer_score >= 17
       player_actions
     else
-      @dealer.dealer_cards << @deck.rand_cards
-      scores(@dealer.dealer_cards, @dealer, "dealer_score")
+      @dealer_hand.hand << @deck.rand_cards
+      scores(@dealer_hand.hand, @dealer, "dealer_score")
     end
   end
 
   def info
-    print "Player cards: #{@player_name.player_cards.inspect}."
+    print "Player cards: #{@player_hand.hand.inspect}."
     print " Player scores: #{@player_name.player_score.inspect}."
     puts " Player money: #{@player_name.player_money}."
-    print "Dealer cards: #{'*' * @dealer.dealer_cards.count}."
+    print "Dealer cards: #{'*' * @dealer_hand.hand.count}."
     print " Dealer scores: **."
     print " Dealer money: #{@dealer.dealer_money}.\n"
   end
@@ -73,10 +78,10 @@ class BlackJack
 
   def end_game
     info
-    puts "Dealer_scores: #{@dealer.dealer_score}. Dealers card: #{@dealer.dealer_cards}"
+    puts "Dealer_scores: #{@dealer.dealer_score}. Dealers card: #{@dealer_hand.hand}"
     puts "Do you want to continue playing? Enter: y/n"
-    @dealer.dealer_cards = []
-    @player_name.player_cards = []
+    @dealer_hand.hand = []
+    @player_hand.hand = []
     begin
       retry_choise = gets.chomp.to_s
       case retry_choise
@@ -93,9 +98,9 @@ class BlackJack
 
   def add_card
     sleep(1)
-    if @player_name.player_cards.count < 3 || @player_name.player_score <= 21
-      @player_name.player_cards << @deck.rand_cards
-      scores(@player_name.player_cards, @player_name, "player_score")
+    if @player_hand.hand.count < 3 || @player_name.player_score <= 21
+      @player_hand.hand << @deck.rand_cards
+      scores(@player_hand.hand, @player_name, "player_score")
     else
       open_card
     end

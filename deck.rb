@@ -1,18 +1,22 @@
-# frozen_string_literal: true
+require_relative 'card'
 
 class Deck
-  attr_accessor :cards, :suits
+  attr_accessor :deck
 
-  def initialize(_cards = [], _suits = [])
-    @cards = %w[2 3 4 5 6 7 8 9 10 j q k a]
-    spade = '♠'
-    heart = '♥'
-    club = '♣'
-    diamond = '♦'
-    @suits = [spade, heart, club, diamond]
+  def initialize(deck = [])
+    @deck = deck
+    @card = Card.new
+  end
+
+  def deck_card
+    @card.suit.each  do |suit|
+      deck << @card.card_value.map {|card_value| card_value + "#{suit}"}
+      deck.flatten!.shuffle!
+    end
   end
 
   def rand_cards
-    cards.sample + suits.sample
+    rand_card = self.deck.sample(random: Random.new(1))
+    self.deck.delete(rand_card)
   end
 end
