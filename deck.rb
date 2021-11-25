@@ -9,14 +9,14 @@ class Deck
   end
 
   def deck_card
-    @card.suit.each  do |suit|
-      deck << @card.card_value.map {|card_value| card_value + "#{suit}"}
+    @card.suit.each do |suit|
+      deck << @card.card_value.map { |card_value| card_value + suit.to_s }
       deck.flatten!.shuffle!
     end
   end
 
   def rand_cards
-    rand_card = self.deck.sample(random: Random.new(1))
-    self.deck.delete(rand_card)
+    rand_card = deck.sample(random: Random.new(1))
+    deck.delete(rand_card)
   end
 end
