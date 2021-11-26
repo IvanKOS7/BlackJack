@@ -13,7 +13,7 @@ class Deck
     suit_arr = ['♠', '♥', '♣', '♦']
     suit_arr.each do |suit|
       deck << card_value_arr.map { |card_value| Card.new(suit = suit, card_value = card_value) }
-      deck.flatten!.shuffle!          # number = Card.new(suit=suit_arr, card_value= card_arr)        # deck << number
+      deck.flatten!.shuffle!
     end
   end
 
