@@ -9,7 +9,7 @@ require_relative 'interface'
 class BlackJack
   def start_game
     @deck = Deck.new
-    @deck.deck_card
+    @deck.do_deck
     @dealer = Dealer.new
     @interface = Interface.new
     @interface.start_interface
@@ -67,12 +67,12 @@ class BlackJack
   end
 
   def dealer_win
-    @interface.open_card("CAZINO")
+    @interface.open_card(@dealer_name.to_s.capitalize)
     @dealer.dealer_money = @dealer.dealer_money + @bank
   end
 
   def standoff
-    puts "STANDOFF !!!!"
+    @interface.standoff
     @player_name.player_money = @player_name.player_money + 10
     @dealer.dealer_money = @dealer.dealer_money + 10
   end
@@ -87,10 +87,10 @@ class BlackJack
       dealer_win
     elsif (comprasion_result) == 1 && (@dealer_result > 21)
       player_win
-    elsif comprasion_result == 0
+    elsif comprasion_result.zero?
       standoff
     end
-     @interface.secret_info(@player_name, @dealer)
+    @interface.secret_info(@player_name, @dealer)
     @dealer.dealer_hand.hand = []
     @player_name.player_hand.hand = []
     @interface.end_game { end_game }
@@ -123,7 +123,7 @@ class BlackJack
     @bank += 10
     @dealer.dealer_money = @dealer.dealer_money - bet
     @bank += 10
-    puts "Bank: #{@bank}"
+    @interface.bank(@bank)
   end
   # BlackJack
 end

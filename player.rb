@@ -12,11 +12,6 @@ class Player
     @player_money = player_money
   end
 
-  def create_hand
-    # @deck.rand_cards
-    # @player_hand.hand << @deck.rand_cards << @deck.rand_cards
-  end
-
   def count_score_player
     player_hand.scores(player_hand.hand, self, "player_score")
   end

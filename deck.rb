@@ -8,10 +8,12 @@ class Deck
     @card = Card.new
   end
 
-  def deck_card
-    @card.suit.each do |suit|
-      deck << @card.card_value.map { |card_value| card_value + suit.to_s }
-      deck.flatten!.shuffle!
+  def do_deck
+    card_value_arr = %w[2 3 4 5 6 7 8 9 10 j q k a]
+    suit_arr = ['♠', '♥', '♣', '♦']
+    suit_arr.each do |suit|
+      deck << card_value_arr.map { |card_value| Card.new(suit = suit, card_value = card_value) }
+      deck.flatten!.shuffle!          # number = Card.new(suit=suit_arr, card_value= card_arr)        # deck << number
     end
   end
 
