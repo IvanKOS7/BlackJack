@@ -32,9 +32,9 @@ class BlackJack
   end
 
   def user_action
+    @interface.bank(@bank)
     @interface.info(@player_name, @dealer)
     @player_choice = gets.chomp.to_i
-
     case @player_choice
     when 1 then dealers_action
     when 2 then add_card
@@ -67,7 +67,7 @@ class BlackJack
   end
 
   def dealer_win
-    @interface.open_card(@dealer_name.to_s.capitalize)
+    @interface.open_card(@dealer.to_s.capitalize)
     @dealer.dealer_money = @dealer.dealer_money + @bank
   end
 

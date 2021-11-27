@@ -70,8 +70,8 @@ class Interface
     print " Player scores: #{player_object.player_score.inspect}."
     puts " Player money: #{player_object.player_money}."
     y = dealer_object.dealer_hand.hand.count
-    x.times do |x|
-      print "Dealer card #{x + 1}: #{dealer_object.dealer_hand.hand[x].card_value + dealer_object.dealer_hand.hand[x].suit}."
+    y.times do |y|
+      print "Dealer card #{y + 1}: #{dealer_object.dealer_hand.hand[y].card_value + dealer_object.dealer_hand.hand[y].suit}."
     end
     print " Dealer scores: #{dealer_object.dealer_score}"
     print " Dealer money: #{dealer_object.dealer_money}.\n"
